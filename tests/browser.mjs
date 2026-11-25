@@ -69,7 +69,48 @@ async function watch(context) {
 const getSave = (page) =>
   page.evaluate(() => JSON.parse(localStorage.getItem('shingal.resistance.profile.v1')));
 try {
-  if (process.argv.includes('--gallery')) {
+  if (process.argv.includes('--benchmark')) {
+    for (const [device, width, height, density, touch] of [
+      ['desktop', 1360, 840, 1, false],
+      ['iphone', 844, 390, 3, true],
+      ['android', 915, 412, 2.625, true],
+    ]) {
+      const context = await browser.newContext({
+        viewport: { width, height },
+        isMobile: touch,
+        hasTouch: touch,
+        deviceScaleFactor: density,
+      });
+      const page = await watch(context);
+      await page.getByRole('button', { name: 'الإعدادات', exact: true }).click();
+      await page.locator('[data-pref="quality"]').selectOption('0');
+      await page.locator('[data-go="back"]').click();
+      await page.locator('[data-go="start"]').click();
+      await page.locator('[data-go="enter"]').click();
+      await page.locator('#h-distance').waitFor();
+      results[device] = await page.evaluate(async () => {
+        const sample = (duration) =>
+          new Promise((resolve) => {
+            let frames = 0;
+            const start = performance.now();
+            function next(t) {
+              frames++;
+              if (t - start < duration) requestAnimationFrame(next);
+              else
+                resolve({
+                  frames,
+                  seconds: +((t - start) / 1000).toFixed(2),
+                  fps: +((frames * 1000) / (t - start)).toFixed(1),
+                });
+            }
+            requestAnimationFrame(next);
+          });
+        await sample(6000);
+        return sample(12000);
+      });
+      await context.close();
+    }
+  } else if (process.argv.includes('--gallery')) {
     const context = await browser.newContext({ viewport: { width: 1400, height: 850 } }),
       page = await watch(context);
     for (const [index, name] of [
@@ -195,7 +236,7 @@ try {
         deviceScaleFactor: dpr,
       });
       const page = await watch(c);
-      await page.getByRole('button', {name:'الإعدادات', exact:true}).tap();
+      await page.getByRole('button', { name: 'الإعدادات', exact: true }).tap();
       await page.locator('[data-pref="quality"]').selectOption('0');
       await page.locator('[data-go="back"]').tap();
       await page.locator('[data-go="start"]').tap();
@@ -248,7 +289,7 @@ try {
       const save = await getSave(page);
       assert.ok(save.run.z < 24);
       assert.notEqual(save.run.yaw, 0);
-      await page.getByRole('button', {name:'الإعدادات', exact:true}).tap();
+      await page.getByRole('button', { name: 'الإعدادات', exact: true }).tap();
       await page.locator('[data-go="tab-controls"]').tap();
       await page.locator('[data-go="layout"]').tap();
       const b = await page.locator('[data-touch="jump"]').boundingBox(),
@@ -264,7 +305,7 @@ try {
       });
       await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
       await page.locator('#layout-done').tap();
-      await page.getByRole('heading',{name:'الإعدادات',exact:true}).waitFor();
+      await page.getByRole('heading', { name: 'الإعدادات', exact: true }).waitFor();
       assert.ok((await getSave(page)).prefs.buttons.jump);
       await page.locator('[data-go="back"]').tap();
       await page.locator('[data-go="main"]').tap();
