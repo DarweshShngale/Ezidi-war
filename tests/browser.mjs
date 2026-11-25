@@ -195,7 +195,7 @@ try {
         deviceScaleFactor: dpr,
       });
       const page = await watch(c);
-      await page.locator('[data-go="settings"]').tap();
+      await page.getByRole('button', {name:'الإعدادات', exact:true}).tap();
       await page.locator('[data-pref="quality"]').selectOption('0');
       await page.locator('[data-go="back"]').tap();
       await page.locator('[data-go="start"]').tap();
@@ -248,7 +248,7 @@ try {
       const save = await getSave(page);
       assert.ok(save.run.z < 24);
       assert.notEqual(save.run.yaw, 0);
-      await page.locator('[data-go="settings"]').tap();
+      await page.getByRole('button', {name:'الإعدادات', exact:true}).tap();
       await page.locator('[data-go="tab-controls"]').tap();
       await page.locator('[data-go="layout"]').tap();
       const b = await page.locator('[data-touch="jump"]').boundingBox(),
@@ -264,6 +264,7 @@ try {
       });
       await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
       await page.locator('#layout-done').tap();
+      await page.getByRole('heading',{name:'الإعدادات',exact:true}).waitFor();
       assert.ok((await getSave(page)).prefs.buttons.jump);
       await page.locator('[data-go="back"]').tap();
       await page.locator('[data-go="main"]').tap();

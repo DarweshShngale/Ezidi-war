@@ -33,11 +33,20 @@ export function touchControls(
       })
       .join('');
   if (edit) {
-    document.querySelector('#layout-done')?.addEventListener('click', () => {
-      write();
-      done();
-    });
-    document.querySelector('#layout-reset')?.addEventListener('click', () => {
+    // A touch drag can suppress the next compatibility click on mobile browsers.
+    // Activate these editor controls on a released touch as well as keyboard clicks.
+    function editorButton(selector: string, activate: () => void) {
+      const button = container.querySelector<HTMLButtonElement>(selector)!;
+      button.addEventListener('pointerup', (event) => {
+        if (event.pointerType === 'touch' && document.elementFromPoint(event.clientX, event.clientY) === button) {
+          event.preventDefault();
+          activate();
+        }
+      });
+      button.addEventListener('click', () => { if (button.isConnected) activate(); });
+    }
+    editorButton('#layout-done', () => { write(); done(); });
+    editorButton('#layout-reset', () => {
       p.prefs.buttons = {};
       touchControls(container, p, current, edit, write, done);
     });
