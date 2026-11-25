@@ -1,36 +1,109 @@
-import {missions} from './story';
-import {actions,unlocked,xp,type Profile,type Action} from './profile';
-export const ico=(name:string,size=19)=>`<svg aria-hidden="true" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><use href="./icons.svg#${name}"></use></svg>`;
-export const num=(n:number)=>String(n).padStart(2,'0');
-export const ar=(n:number)=>Math.round(n).toLocaleString('ar-IQ');
-export const keyName=(code:string)=>code.replace(/^Key|^Digit/,'').replace(/Left$/,' L').replace(/Right$/,' R');
-export const art=(i:number)=>`./art/chapter-${i+1}.webp`;
-const ctrl=(id:string,label:string,icon:string)=>`<button class="menu-link" data-go="${id}">${ico(icon)}<span>${label}</span></button>`;
-export function home(p:Profile){
- const i=p.run?.index??unlocked(p),m=missions[i];
- return `<header class="mast"><div class="brand" dir="ltr"><img src="./emblem.svg" alt=""><div><b>SHINGAL</b><small>RESISTANCE</small></div></div><div class="tools"><button data-go="sound" id="sound-button" title="${p.prefs.muted?'تشغيل الصوت':'كتم الصوت'}" aria-label="${p.prefs.muted?'تشغيل الصوت':'كتم الصوت'}">${ico(p.prefs.muted?'volume-x':'volume-2')}</button><button data-go="full" title="ملء الشاشة" aria-label="ملء الشاشة">${ico('maximize')}</button></div></header>
+import { missions } from './story';
+import { actions, unlocked, rank, xp, type Profile, type Action } from './profile';
+export const ico = (name: string, size = 19) =>
+  `<svg aria-hidden="true" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><use href="./icons.svg#${name}"></use></svg>`;
+export const num = (n: number) => String(n).padStart(2, '0');
+export const ar = (n: number) => Math.round(n).toLocaleString('ar-IQ');
+export const keyName = (code: string) =>
+  code
+    .replace(/^Key|^Digit/, '')
+    .replace(/Left$/, ' L')
+    .replace(/Right$/, ' R');
+export const art = (i: number) => `./art/chapter-${i + 1}.webp`;
+const ctrl = (id: string, label: string, icon: string) =>
+  `<button class="menu-link" data-go="${id}">${ico(icon)}<span>${label}</span></button>`;
+export function home(p: Profile) {
+  const i = p.run?.index ?? unlocked(p),
+    m = missions[i];
+  return `<header class="mast"><div class="brand" dir="ltr"><img src="./emblem.svg" alt=""><div><b>SHINGAL</b><small>RESISTANCE</small></div></div><div class="tools"><button data-go="sound" id="sound-button" title="${p.prefs.muted ? 'تشغيل الصوت' : 'كتم الصوت'}" aria-label="${p.prefs.muted ? 'تشغيل الصوت' : 'كتم الصوت'}">${ico(p.prefs.muted ? 'volume-x' : 'volume-2')}</button><button data-go="full" title="ملء الشاشة" aria-label="ملء الشاشة">${ico('maximize')}</button></div></header>
  <div class="menu-zone"><section class="main-menu" aria-label="القائمة الرئيسية">
  <div class="title-lockup"><div class="hero-overline"><i></i><span>SHINGAL &nbsp;—&nbsp; RESISTANCE</span></div><h1>شنكال</h1><h2>ملحمة الصمود</h2><p>حكاية أرضٍ وشعبٍ رفض أن يختفي.</p></div>
- <nav><button class="start" data-go="start">${ico('play',22)}<b>بدء اللعبة</b><kbd>ENTER ↵</kbd></button>
- <button class="continue" data-go="continue" ${p.run?'':'disabled'}>${ico('rotate-ccw',18)}<b>متابعة اللعبة</b>${p.run?'':ico('lock',13)}</button>
- <div class="menu-grid">${ctrl('chapters','اختيار المرحلة','map')}${ctrl('achievements','الإنجازات','trophy')}${ctrl('settings','الإعدادات','settings-2')}${ctrl('help','طريقة اللعب','gamepad-2')}</div>
- <button class="about-link" data-go="about">${ico('info',14)} حول اللعبة</button></nav>
+ <nav><button class="start" data-go="start">${ico('play', 22)}<b>بدء اللعبة</b><kbd>ENTER ↵</kbd></button>
+ <button class="continue" data-go="continue" ${p.run ? '' : 'disabled'}>${ico('rotate-ccw', 18)}<b>متابعة اللعبة</b>${p.run ? '' : ico('lock', 13)}</button>
+ <div class="menu-grid">${ctrl('chapters', 'اختيار المرحلة', 'map')}${ctrl('achievements', 'الإنجازات', 'trophy')}${ctrl('settings', 'الإعدادات', 'settings-2')}${ctrl('help', 'طريقة اللعب', 'gamepad-2')}</div>
+ <button class="about-link" data-go="about">${ico('info', 14)} حول اللعبة</button></nav>
  </section></div>
  <aside class="field"><div class="field-label"><span class="field-stroke"></span><span>سجلّ الحملة</span><span class="field-eng" dir="ltr">CAMPAIGN</span></div>
- <button class="chapter-card" data-go="chapter-card"><img src="${art(i)}" alt=""><div><small>الفصل ${ar(i+1)} من ${ar(8)}</small><strong>${m.title}</strong><span>${ico('map-pin',13)}${m.place}</span></div><span class="card-next">${ico('chevron-left',17)}</span></button></aside>
- <footer class="home-foot"><div class="release" dir="ltr"><i></i> V 1.0.0</div><span class="hardware">${ico('gamepad-2',15)} يدعم لوحة المفاتيح واللمس</span><span class="local">${ico('save',14)} حفظ محلي</span></footer>`;
+ <button class="chapter-card" data-go="chapter-card"><img src="${art(i)}" alt=""><div><small>الفصل ${ar(i + 1)} من ${ar(8)}</small><strong>${m.title}</strong><span>${ico('map-pin', 13)}${m.place}</span></div><span class="card-next">${ico('chevron-left', 17)}</span></button></aside>
+ <footer class="home-foot"><div class="release" dir="ltr"><i></i> V 1.0.0</div><span class="hardware">${ico('gamepad-2', 15)} يدعم لوحة المفاتيح واللمس</span><span class="local">${ico('save', 14)} حفظ محلي</span></footer>`;
 }
-export const btn=(id:string,text:string,style='plain',icon='')=>`<button class="${style}" data-go="${id}">${icon?ico(icon):''}${text}</button>`;
-export function shell(title:string,eyebrow:string,inside:string,large=false){return `<div class="veil"><section class="panel ${large?'wide':''}" role="dialog" aria-modal="true" aria-labelledby="panel-title"><header class="panel-head"><div><small>${eyebrow}</small><h2 id="panel-title">${title}</h2></div><button class="icon-btn" data-go="back" aria-label="رجوع">${ico('x')}</button></header>${inside}</section></div>`}
-export function chapters(p:Profile){const u=unlocked(p);return shell('اختيار المرحلة','الحملة القصصية',`<div class="chapter-grid">${missions.map((m,i)=>`<button class="chapter-choice ${i>u?'locked':''}" data-go="chapter-${i}" ${i>u?'disabled':''}><img loading="lazy" src="${art(i)}" alt=""><span class="cc-num">${num(i+1)}</span><div>${ico(i>u?'lock':p.results[i]?'circle-check':'play',16)}<strong>${m.title}</strong></div></button>`).join('')}</div>`,true)}
-export function briefing(i:number,playing=false){const m=missions[i];return shell(m.title,`الفصل ${ar(i+1)} / ${ar(8)}`,`<img class="brief-art" src="${art(i)}" alt="${m.place}"><div class="brief-meta"><span>${ico('map-pin',15)}${m.place}</span><span>${ico('clock-3',15)}${m.time}</span></div><p>${m.brief}</p><div class="objective-list">${m.goals.map(g=>`<div>${ico('diamond',14)}${g.label}</div>`).join('')}<div class="muted">${ico('bookmark',14)}اختياري · ${m.optional}</div></div>${btn(playing?'enter':'launch-'+i,playing?'دخول المرحلة':'العب الفصل','gold','play')}`)}
-export function achievementPanel(p:Profile){return shell('الإنجازات','سجلّ اللاعب',`<div class="summary-pills"><span>${ico('trophy')}${ar(Object.keys(p.results).length)} / ٨ فصول</span><span>${ico('star')}${ar(xp(p))} نقطة خبرة</span></div><div class="awards">${missions.map((m,i)=>`<div class="${p.results[i]?'won':''}">${ico(p.results[i]?'badge-check':'lock')}<section><b>${m.achievement}</b><small>أكمل فصل «${m.title}»</small></section></div>`).join('')}</div>`,true)}
-export function about(){return shell('حول اللعبة','شنكال – ملحمة الصمود',`<img class="brief-art" src="${art(3)}" alt="جبل خيالي مستوحى من شنكال"><p>تتبع الحملة آزاد وأسرته عبر ثمانية فصول عن الحياة اليومية والفقد والعودة. تستلهم القصة صمود الإيزيديين في وجه اعتداءات داعش على شنكال.</p><p>الشخصيات والأحياء والحوارات من نسج الخيال. تحضر الرموز الدينية في مواضع الذاكرة والتأمل، ويحمل دفتر روجين قصص الجيران من فصل إلى آخر.</p><p class="muted">الرسوم والموسيقى أصلية. خط تجوال بترخيص SIL Open Font License، والأيقونات من Lucide بترخيص ISC. يُحفظ تقدمك على هذا الجهاز.</p>`)}
-export function help(p:Profile){return shell('طريقة اللعب','دليل اللاعب',`<p>اتبع المعيّن الذهبي حتى تقترب من الهدف، ثم اضغط زر التفاعل. تشير العلامة الفيروزية على الخريطة إلى ذكرى اختيارية. اختبئ خلف الجدران لاستعادة أنفاسك.</p><div class="key-grid">${(Object.keys(actions) as Action[]).map(a=>`<div><span>${actions[a]}</span><kbd>${keyName(p.prefs.keys[a])}</kbd></div>`).join('')}<div>إطلاق<kbd>LMB</kbd></div><div>تصويب<kbd>RMB</kbd></div><div>توقّف<kbd>ESC</kbd></div></div><p class="muted">${ico('smartphone',16)} على الهاتف، حرّك العصا اليسرى واسحب في يمين المشهد لتوجيه النظر. تستطيع تخصيص مواضع الأزرار من الإعدادات.</p>`,true)}
-export function settings(p:Profile,rec:number,tab:string,rebind:string){
- const v=p.prefs;
- const range=(id:'music'|'dialogue'|'effects'|'sensitivity'|'touchSensitivity',label:string,lo:number,hi:number)=>`<label class="slider-row"><span>${label} <output for="set-${id}">${ar(v[id]*100)}٪</output></span><input id="set-${id}" data-pref="${id}" type="range" min="${lo}" max="${hi}" step=".05" value="${v[id]}"></label>`;
- const select=(id:'quality'|'difficulty',label:string,values:string[])=>`<label class="select-row"><span>${label}</span><select data-pref="${id}">${values.map((t,i)=>`<option value="${i}" ${i===v[id]?'selected':''}>${t}</option>`).join('')}</select></label>`;
- const tabs:[string,string][]=[['display','العرض واللعب'],['audio','الصوت'],['controls','التحكم']];
- let body=tab==='display'?select('quality','جودة الرسوم',['منخفضة','متوسطة','عالية','فائقة'])+`<p class="note">الإعداد المقترح لجهازك · ${['منخفضة','متوسطة','عالية','فائقة'][rec]}</p>`+select('difficulty','مستوى الصعوبة',['قصصي','متوازن','صعب']):tab==='audio'?range('music','الموسيقى',0,1)+range('dialogue','الحوار',0,1)+range('effects','المؤثرات',0,1)+`<p class="note">يستخدم السرد صوتًا عربيًا من جهازك عند توفّره، وتُعرض الحوارات مكتوبة دائمًا.</p>`:range('sensitivity','حساسية الفأرة',.3,2.5)+range('touchSensitivity','حساسية اللمس',.3,2.5)+`<label class="select-row">اهتزاز اللمس<input data-pref="vibrate" type="checkbox" ${v.vibrate?'checked':''}></label><div class="binds">${(Object.keys(actions) as Action[]).map(k=>`<button data-go="bind-${k}">${actions[k]}<kbd>${rebind===k?'…':keyName(v.keys[k])}</kbd></button>`).join('')}</div>${btn('layout','ضبط مواضع أزرار اللمس','plain','smartphone')}`;
- return shell('الإعدادات','تفضيلات اللاعب',`<div class="tabs">${tabs.map(([k,t])=>`<button class="${tab===k?'selected':''}" data-go="tab-${k}">${t}</button>`).join('')}</div>${body}`)}
+export const btn = (id: string, text: string, style = 'plain', icon = '') =>
+  `<button class="${style}" data-go="${id}">${icon ? ico(icon) : ''}${text}</button>`;
+export function shell(title: string, eyebrow: string, inside: string, large = false) {
+  return `<div class="veil"><section class="panel ${large ? 'wide' : ''}" role="dialog" aria-modal="true" aria-labelledby="panel-title"><header class="panel-head"><div><small>${eyebrow}</small><h2 id="panel-title">${title}</h2></div><button class="icon-btn" data-go="back" aria-label="رجوع">${ico('x')}</button></header>${inside}</section></div>`;
+}
+export function chapters(p: Profile) {
+  const u = unlocked(p);
+  return shell(
+    'اختيار المرحلة',
+    'الحملة القصصية',
+    `<div class="chapter-grid">${missions.map((m, i) => `<button class="chapter-choice ${i > u ? 'locked' : ''}" data-go="chapter-${i}" ${i > u ? 'disabled' : ''}><img loading="lazy" src="${art(i)}" alt=""><span class="cc-num">${num(i + 1)}</span><div>${ico(i > u ? 'lock' : p.results[i] ? 'circle-check' : 'play', 16)}<strong>${m.title}</strong></div></button>`).join('')}</div>`,
+    true,
+  );
+}
+export function briefing(i: number, playing = false) {
+  const m = missions[i];
+  return shell(
+    m.title,
+    `الفصل ${ar(i + 1)} / ${ar(8)}`,
+    `<img class="brief-art" src="${art(i)}" alt="${m.place}"><div class="brief-meta"><span>${ico('map-pin', 15)}${m.place}</span><span>${ico('clock-3', 15)}${m.time}</span></div><p>${m.brief}</p><div class="objective-list">${m.goals.map((g) => `<div>${ico('diamond', 14)}${g.label}</div>`).join('')}<div class="muted">${ico('bookmark', 14)}اختياري · ${m.optional}</div></div>${btn(playing ? 'enter' : 'launch-' + i, playing ? 'دخول المرحلة' : 'العب الفصل', 'gold', 'play')}`,
+  );
+}
+export function achievementPanel(p: Profile) {
+  return shell(
+    'الإنجازات',
+    'سجلّ اللاعب',
+    `<div class="summary-pills"><span>${ico('trophy')}${ar(Object.keys(p.results).length)} / ٨ فصول</span><span>${ico('star')}${ar(xp(p))} نقطة خبرة</span><span>${ico('backpack')}مستوى التجهيز ${ar(rank(p))}</span></div><div class="awards">${missions.map((m, i) => `<div class="${p.results[i] ? 'won' : ''}">${ico(p.results[i] ? 'badge-check' : 'lock')}<section><b>${m.achievement}</b><small>أكمل فصل «${m.title}»</small></section></div>`).join('')}</div>`,
+    true,
+  );
+}
+export function about() {
+  return shell(
+    'حول اللعبة',
+    'شنكال – ملحمة الصمود',
+    `<img class="brief-art" src="${art(3)}" alt="جبل خيالي مستوحى من شنكال"><p>تتبع الحملة آزاد وأسرته عبر ثمانية فصول عن الحياة اليومية والفقد والعودة. تستلهم القصة صمود الإيزيديين في وجه اعتداءات داعش على شنكال.</p><p>الشخصيات والأحياء والحوارات من نسج الخيال. تحضر الرموز الدينية في مواضع الذاكرة والتأمل، ويحمل دفتر روجين قصص الجيران من فصل إلى آخر.</p><p class="muted">الرسوم والموسيقى أصلية. خط تجوال بترخيص SIL Open Font License، والأيقونات من Lucide بترخيص ISC. يُحفظ تقدمك على هذا الجهاز.</p>`,
+  );
+}
+export function help(p: Profile) {
+  return shell(
+    'طريقة اللعب',
+    'دليل اللاعب',
+    `<p>اتبع المعيّن الذهبي حتى تقترب من الهدف، ثم اضغط زر التفاعل. تشير العلامة الفيروزية على الخريطة إلى ذكرى اختيارية. اختبئ خلف الجدران لاستعادة أنفاسك.</p><div class="key-grid">${(Object.keys(actions) as Action[]).map((a) => `<div><span>${actions[a]}</span><kbd>${keyName(p.prefs.keys[a])}</kbd></div>`).join('')}<div>إطلاق<kbd>LMB</kbd></div><div>تصويب<kbd>RMB</kbd></div><div>توقّف<kbd>ESC</kbd></div></div><p class="muted">${ico('smartphone', 16)} على الهاتف، حرّك العصا اليسرى واسحب في يمين المشهد لتوجيه النظر. تستطيع تخصيص مواضع الأزرار من الإعدادات.</p>`,
+    true,
+  );
+}
+export function settings(p: Profile, rec: number, tab: string, rebind: string) {
+  const v = p.prefs;
+  const range = (
+    id: 'music' | 'dialogue' | 'effects' | 'sensitivity' | 'touchSensitivity',
+    label: string,
+    lo: number,
+    hi: number,
+  ) =>
+    `<label class="slider-row"><span>${label} <output for="set-${id}">${ar(v[id] * 100)}٪</output></span><input id="set-${id}" data-pref="${id}" type="range" min="${lo}" max="${hi}" step=".05" value="${v[id]}"></label>`;
+  const select = (id: 'quality' | 'difficulty', label: string, values: string[]) =>
+    `<label class="select-row"><span>${label}</span><select data-pref="${id}">${values.map((t, i) => `<option value="${i}" ${i === v[id] ? 'selected' : ''}>${t}</option>`).join('')}</select></label>`;
+  const tabs: [string, string][] = [
+    ['display', 'العرض واللعب'],
+    ['audio', 'الصوت'],
+    ['controls', 'التحكم'],
+  ];
+  let body =
+    tab === 'display'
+      ? select('quality', 'جودة الرسوم', ['منخفضة', 'متوسطة', 'عالية', 'فائقة']) +
+        `<p class="note">الإعداد المقترح لجهازك · ${['منخفضة', 'متوسطة', 'عالية', 'فائقة'][rec]}</p>` +
+        select('difficulty', 'مستوى الصعوبة', ['قصصي', 'متوازن', 'صعب'])
+      : tab === 'audio'
+        ? range('music', 'الموسيقى', 0, 1) +
+          range('dialogue', 'الحوار', 0, 1) +
+          range('effects', 'المؤثرات', 0, 1) +
+          `<p class="note">يستخدم السرد صوتًا عربيًا من جهازك عند توفّره، وتُعرض الحوارات مكتوبة دائمًا.</p>`
+        : range('sensitivity', 'حساسية الفأرة', 0.3, 2.5) +
+          range('touchSensitivity', 'حساسية اللمس', 0.3, 2.5) +
+          `<label class="select-row">اهتزاز اللمس<input data-pref="vibrate" type="checkbox" ${v.vibrate ? 'checked' : ''}></label><div class="binds">${(Object.keys(actions) as Action[]).map((k) => `<button data-go="bind-${k}">${actions[k]}<kbd>${rebind === k ? '…' : keyName(v.keys[k])}</kbd></button>`).join('')}</div>${btn('layout', 'ضبط مواضع أزرار اللمس', 'plain', 'smartphone')}`;
+  return shell(
+    'الإعدادات',
+    'تفضيلات اللاعب',
+    `<div class="tabs">${tabs.map(([k, t]) => `<button class="${tab === k ? 'selected' : ''}" data-go="tab-${k}">${t}</button>`).join('')}</div>${body}`,
+  );
+}

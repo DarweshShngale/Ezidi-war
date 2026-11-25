@@ -1,2 +1,6 @@
-import {defineConfig} from 'vite';
-export default defineConfig({base:'./',build:{target:'es2022',chunkSizeWarningLimit:650},server:{host:true,allowedHosts:true}});
+import { defineConfig } from 'vite';
+export default defineConfig({
+  base: './',
+  build: { target: 'es2022', chunkSizeWarningLimit: 650 },
+  server: { host: true, allowedHosts: true },
+});
